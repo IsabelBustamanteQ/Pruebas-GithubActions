@@ -10,6 +10,6 @@ form.addEventListener("submit", (event) => {
 
   const firstNumber = Number.parseInt(first.value);
   const secondNumber = Number.parseInt(second.value);
-
+// Añadiendo un comentario
   div.innerHTML = "<p>" + sumar(firstNumber, secondNumber) + "</p>";
 });
