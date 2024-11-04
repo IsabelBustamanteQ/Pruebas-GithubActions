@@ -5,7 +5,7 @@ on:
     branches: [main]
   pull_request:
     branches: [main, master]
-    
+
 permissions: write-all
 
 jobs:
@@ -27,14 +27,14 @@ jobs:
 
       - name: Process each commit
         run: |
-          # Make sure we're in the right directory
-          cd $GITHUB_WORKSPACE
+          # Get the list of commits in the push
+          commits=$(git rev-list HEAD ^HEAD~$GITHUB_SHA)
           
-          # Iterate over commits
-          for commit in $(jq -r '.commits[].id' <<< "${{ toJson(github.event.commits) }}"); do
+          # Iterate over each commit
+          for commit in $commits; do
             echo "Processing commit $commit"
 
-            # Checkout each commit individually
+            # Checkout each commit
             git checkout $commit
 
             # Run Jest coverage report
