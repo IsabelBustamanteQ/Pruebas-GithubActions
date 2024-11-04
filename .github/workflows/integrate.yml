@@ -65,15 +65,10 @@ jobs:
             else
               echo "No pull request number found. Skipping comment."
             fi
+
+            # Optional: Add sticky pull request comment for this commit
+            echo "Adding sticky comment for commit $commit"
+            echo "${COVERAGE_OUTPUT}" | markdown >> sticky-comment.txt
+            gh pr comment ${{ github.event.pull_request.number }} --body "$(cat sticky-comment.txt)"
           done
         shell: bash
-
-      - name: Jest coverage report
-        uses: ArtiomTr/jest-coverage-report-action@v2.2.6
-        id: coverage
-        with:
-          output: report-markdown, comment
-
-      - uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          message: ${{ steps.coverage.outputs.report }}
