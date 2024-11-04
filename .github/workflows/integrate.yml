@@ -66,9 +66,12 @@ jobs:
               echo "No pull request number found. Skipping comment."
             fi
 
-            # Optional: Add sticky pull request comment for this commit
+            # Add sticky comment directly using the coverage output
             echo "Adding sticky comment for commit $commit"
-            echo "${COVERAGE_OUTPUT}" | markdown >> sticky-comment.txt
-            gh pr comment ${{ github.event.pull_request.number }} --body "$(cat sticky-comment.txt)"
+            if [[ -n "${{ github.event.pull_request.number }}" ]]; then
+              gh pr comment ${{ github.event.pull_request.number }} --body "Sticky comment for commit $commit: \n\n$COVERAGE_OUTPUT"
+            else
+              echo "No pull request number found for sticky comment. Skipping."
+            fi
           done
         shell: bash
