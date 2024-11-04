@@ -13,17 +13,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Obtener todo el historial de commits
 
       - name: Set up node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run Unit Tests
-        run: npm run test-once
 
       - name: Get list of commits
         id: get_commits
@@ -46,6 +42,14 @@ jobs:
 
             # Checkout each commit individually
             git checkout $commit
+
+            # Install dependencies for each commit
+            echo "Installing dependencies for commit $commit"
+            npm ci
+            
+            # Run Unit Tests for each commit
+            echo "Running unit tests for commit $commit"
+            npm run test-once
 
             # Run Jest coverage report
             echo "Generating Jest coverage report for commit $commit"
