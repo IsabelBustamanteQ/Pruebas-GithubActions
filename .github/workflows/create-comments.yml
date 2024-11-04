@@ -1,0 +1,22 @@
+name: create-comments
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main, master]
+    
+permissions: write-all
+
+jobs:
+  ci_to_main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Jest coverage report
+        uses: ArtiomTr/jest-coverage-report-action@v2.2.6
+        id: coverage
+        with:
+          output: report-markdown, comment
+      - name: Sticky PR comment
+        uses: marocchino/sticky-pull-request
