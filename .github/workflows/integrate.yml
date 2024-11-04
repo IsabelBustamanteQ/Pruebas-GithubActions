@@ -25,16 +25,26 @@ jobs:
       - name: Run Unit Tests
         run: npm run test-once
 
+      - name: Get list of commits
+        id: get_commits
+        run: |
+          # Get the last commit SHA and the previous commit SHA
+          LAST_COMMIT_SHA=$(git rev-parse HEAD)
+          PREVIOUS_COMMIT_SHA=$(git rev-parse HEAD^)
+
+          # Get the list of commits in the push
+          commits=$(git log --pretty=format:'%H' $PREVIOUS_COMMIT_SHA..$LAST_COMMIT_SHA)
+
+          echo "Commits to process: $commits"
+          echo "::set-output name=commits::$commits"
+
       - name: Process each commit
         run: |
-          # Get the list of commits in the push
-          commits=$(git rev-list HEAD ^HEAD~$GITHUB_SHA)
-          
           # Iterate over each commit
-          for commit in $commits; do
+          for commit in ${{ steps.get_commits.outputs.commits }}; do
             echo "Processing commit $commit"
 
-            # Checkout each commit
+            # Checkout each commit individually
             git checkout $commit
 
             # Run Jest coverage report
